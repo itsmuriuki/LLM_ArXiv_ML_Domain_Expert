@@ -17,6 +17,10 @@ numpy = "^1.26.4"
 poethepoet = "0.29.0"
 datasets = "^3.0.1"
 torch = "2.2.2"
+python-dotenv = "^1.0.1"
+pydantic-settings = "^2.4.0"
+requests = "^2.31.0"
+tqdm = "^4.66.0"
 
 # Digital data ETL
 selenium = "^4.21.0"
@@ -72,7 +76,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
 # Data pipelines
-run-arxiv-ml-data-etl = "petry run python -m tools.run --run-etl --no-cache --etl-config-filename arxiv-ml-data-etl.yaml"
+run-arxiv-ml-data-etl = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename arxiv-ml-data-etl.yaml"
 run-feature-engineering-pipeline = "poetry run python -m tools.run --no-cache --run-feature-engineering"
 run-generate-instruct-datasets-pipeline = "poetry run python -m tools.run --no-cache --run-generate-instruct-datasets"
 run-generate-preference-datasets-pipeline = "poetry run python -m tools.run --no-cache --run-generate-preference-datasets"
@@ -98,14 +102,18 @@ call-inference-ml-service = "curl -X POST 'http://127.0.0.1:8000/rag' -H 'Conten
 local-docker-infrastructure-up = "docker compose up -d"
 local-docker-infrastructure-down = "docker compose stop"
 local-zenml-server-down = "poetry run zenml logout --local"
+start-zenml-daemon = "poetry run zenml up"
+stop-zenml-daemon = "poetry run zenml down"
 local-infrastructure-up = [
     "local-docker-infrastructure-up",
+    "start-zenml-daemon",
     "local-zenml-server-down",
     "local-zenml-server-up",
 ]
 local-infrastructure-down = [
     "local-docker-infrastructure-down",
     "local-zenml-server-down",
+    "stop-zenml-daemon",
 ]
 set-local-stack = "poetry run zenml stack set default"
 set-aws-stack = "poetry run zenml stack set aws-stack"

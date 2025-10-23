@@ -25,7 +25,7 @@ You can download and use the final trained model with ML's papers on Hugging Fac
 
 | Tool                                                                                     | Version  | Purpose                        | Open Source |
 | ---------------------------------------------------------------------------------------- | -------- | ------------------------------ | ----------- |
-| [pyenv](https://docs.astral.sh/uv/)                                                         | latest   | Fast Python package management | Yes         |
+| [Poetry](https://python-poetry.org/)                                                      | latest   | Python package management      | Yes         |
 | [Python](https://www.python.org/)                                                        | 3.11     | Runtime environment            | Yes         |
 | [Docker](https://www.docker.com/)                                                        | ≥27.1.1  | Containerization               | Yes         |
 | [AWS CLI](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html) | ≥2.15.42 | Cloud management               | No          |
@@ -116,26 +116,26 @@ cd arxiv-domain-expert-llm
 2. Then, install the dependencies:
 
 ```bash
-uv sync
+poetry install
 ```
 
 3. Optionally, if you plan to commit code, you can install the `pre-commit` hooks:
 
 ```bash
-uv sync --extra dev
-uv run pre-commit install
+poetry install --with dev
+poetry run pre-commit install
 ```
 
-4. Optionally, activate the virtual environment. Although `uv run` will automatically discover the virtual environment of the project, this is necessary to get the right interpreter using `which python` as expected by other workflows with `venv`, `pip`, `poetry`, etc...
+4. Optionally, activate the virtual environment. Poetry will automatically manage the virtual environment for the project, but you can activate it manually if needed:
 
 ```bash
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+poetry shell  # On Windows: poetry shell
 ```
 
 As our task manager (similar to `Makefile`), we run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html) defined in the `tool.poe.tasks` section on the `pyproject.toml` file.
 
 ```bash
-uv run poe ...
+poetry run poe ...
 ```
 
 ### 2. Local Development Setup
@@ -176,34 +176,34 @@ Based on the setup and usage steps described above, assuming the local and cloud
 
 ### Data
 
-- [x] Collect data: `uv run poe run-arxiv-data-etl`
+- [x] Collect data: `poetry run poe run-arxiv-data-etl`
 
-- [x] Compute features: `uv run poe run-feature-engineering-pipeline`
+- [x] Compute features: `poetry run poe run-feature-engineering-pipeline`
 
-- [x] Compute instruct dataset: `uv run poe run-generate-instruct-datasets-pipeline`
+- [x] Compute instruct dataset: `poetry run poe run-generate-instruct-datasets-pipeline`
 
-- [x] Compute preference alignment dataset: `uv run poe run-generate-preference-datasets-pipeline`
+- [x] Compute preference alignment dataset: `poetry run poe run-generate-preference-datasets-pipeline`
 
 ### Training
 
-> From now on, for these steps to work, you need to properly set up AWS SageMaker, such as running `uv sync --extra aws` and filling in the AWS-related environment variables and configs.
+> From now on, for these steps to work, you need to properly set up AWS SageMaker, such as running `poetry install --with aws` and filling in the AWS-related environment variables and configs.
 
-- [x] SFT fine-tuning Llamma 3.1: `uv run poe run-training-pipeline`
+- [x] SFT fine-tuning Llamma 3.1: `poetry run poe run-training-pipeline`
 
-- [x] For DPO, go to `configs/training.yaml`, change `finetuning_type` to `dpo`, and run `uv run poe run-training-pipeline` again
+- [x] For DPO, go to `configs/training.yaml`, change `finetuning_type` to `dpo`, and run `poetry run poe run-training-pipeline` again
 
-- [x] Evaluate fine-tuned models: `uv run poe run-evaluation-pipeline`
+- [x] Evaluate fine-tuned models: `poetry run poe run-evaluation-pipeline`
 
 ### Inference
 
-> From now on, for these steps to work, you need to properly set up AWS SageMaker, such as running `uv sync --extra aws` and filling in the AWS-related environment variables and configs.
+> From now on, for these steps to work, you need to properly set up AWS SageMaker, such as running `poetry install --with aws` and filling in the AWS-related environment variables and configs.
 
-- [x] Call only the RAG retrieval module: `uv run poe call-rag-retrieval-module`
+- [x] Call only the RAG retrieval module: `poetry run poe call-rag-retrieval-module`
 
-- [x] Deploy the LLM Twin microservice to SageMaker: `uv run poe deploy-inference-endpoint`
+- [x] Deploy the LLM Twin microservice to SageMaker: `poetry run poe deploy-inference-endpoint`
 
-- [x] Test the LLM Twin microservice: `uv run poe test-sagemaker-endpoint`
+- [x] Test the LLM Twin microservice: `poetry run poe test-sagemaker-endpoint`
 
-- [x] Start end-to-end RAG server: `uv run poe run-inference-ml-service`
+- [x] Start end-to-end RAG server: `poetry run poe run-inference-ml-service`
 
-- [ ] Test RAG server: `uv run poe call-inference-ml-service`
+- [ ] Test RAG server: `poetry run poe call-inference-ml-service`

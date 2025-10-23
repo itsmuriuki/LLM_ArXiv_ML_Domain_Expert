@@ -2,7 +2,7 @@ from loguru import logger
 from typing_extensions import Annotated
 from zenml import get_step_context, step 
 
-from llm_arxiv.domain.document import ExpertDocument
+from llm_arxiv.domain.documents import ExpertDocument
 
 @step 
 def get_or_create_expert(domain: str) -> Annotated[ExpertDocument, "expert"]:

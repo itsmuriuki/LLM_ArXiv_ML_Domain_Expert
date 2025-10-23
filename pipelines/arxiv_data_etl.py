@@ -19,6 +19,6 @@ def arxiv_data_etl(domain: str, links: list[str]) -> str:
     expert = get_or_create_expert(domain)
     last_step = crawl_links(expert=expert, links=links)
 
-    return last_step.invocation.id
+    return last_step.invocation_id
 
 

@@ -6,7 +6,7 @@ from tqdm import tqdm
 from typing_extensions import Annotated 
 from zenml import get_step_context, step 
 
-from llm_arxiv.application.crawler import ArxivClient
+from llm_arxiv.application.crawlers.crawler import ArxivClient
 from llm_arxiv.domain.documents import ExpertDocument
 
 @step 
