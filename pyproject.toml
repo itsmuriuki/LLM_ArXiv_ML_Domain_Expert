@@ -102,7 +102,7 @@ call-inference-ml-service = "curl -X POST 'http://127.0.0.1:8000/rag' -H 'Conten
 local-docker-infrastructure-up = "docker compose up -d"
 local-docker-infrastructure-down = "docker compose stop"
 local-zenml-server-down = "poetry run zenml logout --local"
-start-zenml-daemon = "poetry run zenml up"
+start-zenml-daemon = { ref = "start-zenml-daemon-task" }
 stop-zenml-daemon = "poetry run zenml down"
 local-infrastructure-up = [
     "local-docker-infrastructure-up",
@@ -157,6 +157,21 @@ case = "win32"
 cmd = "poetry run zenml login --local --blocking"
 
 [[tool.poe.tasks.local-zenml-server-up.switch]]
+cmd = "poetry run zenml login --local"
+
+[tool.poe.tasks.start-zenml-daemon-task]
+control.expr = "sys.platform"
+
+[[tool.poe.tasks.start-zenml-daemon-task.switch]]
+case = "darwin"
+env = { OBJC_DISABLE_INITIALIZE_FORK_SAFETY = "YES" }
+cmd = "poetry run zenml login --local"
+
+[[tool.poe.tasks.start-zenml-daemon-task.switch]]
+case = "win32"
+cmd = "poetry run zenml login --local --blocking"
+
+[[tool.poe.tasks.start-zenml-daemon-task.switch]]
 cmd = "poetry run zenml login --local"
 
 # Tests
